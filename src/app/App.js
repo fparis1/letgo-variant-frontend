@@ -18,6 +18,7 @@ import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import './App.css';
+import PostItem from '../items/PostItem';
 
 class App extends Component {
   constructor(props) {
@@ -54,6 +55,7 @@ class App extends Component {
       currentUser: null
     });
     Alert.success("You're safely logged out!");
+    window.location.reload();
   }
 
   componentDidMount() {
@@ -75,6 +77,7 @@ class App extends Component {
             <Route exact path="/" component={Home}></Route>           
             <PrivateRoute path="/profile" authenticated={this.state.authenticated} currentUser={this.state.currentUser}
               component={Profile}></PrivateRoute>
+            <PrivateRoute path="/post-item" authenticated={this.state.authenticated} component={PostItem}></PrivateRoute>
             <Route path="/login"
               render={(props) => <Login authenticated={this.state.authenticated} loadCurrentlyLoggedInUser={this.loadCurrentlyLoggedInUser} {...props} />}></Route>
             <Route path="/signup"
