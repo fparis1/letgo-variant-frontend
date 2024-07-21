@@ -14,7 +14,7 @@ class Home extends Component {
 
     fetchItems = () => {
         const token = localStorage.getItem(ACCESS_TOKEN); // Retrieve token from local storage
-        axios.get('http://localhost:8080/getItem', {
+        axios.get('http://localhost:8080/getItems', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -30,7 +30,7 @@ class Home extends Component {
     render() {
         return (
             <div className="home-container">
-                <div className="container">
+                <div className="container mt-5">
                     {/* <div className="graf-bg-container">
                         <div className="graf-layout">
                             <div className="graf-circle"></div>
@@ -46,34 +46,29 @@ class Home extends Component {
                         </div>
                     </div>
                     <h1 className="home-title">Spring Boot React OAuth2 Social Login Demo</h1> */}
-                    <div className="items-list">
+                    <div className="row">
                         {this.state.items.map(item => {
-
                             const base64String = item.photo.data;
                             const mimeType = item.photo.contentType;
-
+                            const itemUrl = `/view-item/${item.id}`;
+                            
                             return (
-                                <div key={item.id} className="item">
-                                    <div className="photos">
-                                        <img 
-                                            key={item.photo.id} 
-                                            src={`data:${mimeType};base64,${base64String}`} 
-                                            alt={item.photo.fileName} 
-                                            style={{ maxWidth: '300px', maxHeight: '300px' }}
-                                        />
-                                    </div>
-                                    <h2>{item.title}</h2>
-                                    <p>{item.price}</p>
-                                </div>
-                                );
-
-                            return (
-                                <div key={item.id} className="item">
-                                    <h2>{item.title}</h2>
-                                    <p>{item.description}</p>
-                                    <p>{item.price}</p>
-                                    <div className="photos">
-                                        <p>No photo available</p>
+                                <div key={item.id} className="col-md-4 mb-4">
+                                    <div className="card h-100"> {/* Use h-100 to make cards of equal height */}
+                                        <a href={itemUrl} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                            <img 
+                                                className="card-img-top" 
+                                                src={`data:${mimeType};base64,${base64String}`} 
+                                                alt={item.photo.fileName} 
+                                                style={{ height: '200px', objectFit: 'cover' }}
+                                            />
+                                        </a>
+                                        <div className="card-body">
+                                            <a href={itemUrl} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <h5 className="card-title">{item.title}</h5>
+                                            </a>
+                                            <p className="card-text">{item.price} <b>€</b></p>
+                                        </div>
                                     </div>
                                 </div>
                             );

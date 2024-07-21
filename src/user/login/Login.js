@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Login.css';
 import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL, GITHUB_AUTH_URL, ACCESS_TOKEN } from '../../constants';
 import { login } from '../../util/APIUtils';
-import { Link, Redirect } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import fbLogo from '../../img/fb-logo.png';
 import googleLogo from '../../img/google-logo.png';
 import githubLogo from '../../img/github-logo.png';
@@ -10,11 +10,11 @@ import Alert from 'react-s-alert';
 
 class Login extends Component {
     componentDidMount() {
-        // If the OAuth2 login encounters an error, the user is redirected to the /login page with an error.
-        // Here we display the error and then remove the error query parameter from the location.
-        if(this.props.location.state && this.props.location.state.error) {
+        const state = this.props.location?.state;
+
+        if (state && state.error) {
             setTimeout(() => {
-                Alert.error(this.props.location.state.error, {
+                Alert.error(state.error, {
                     timeout: 5000
                 });
                 this.props.history.replace({
@@ -27,7 +27,7 @@ class Login extends Component {
     
     render() {
         if(this.props.authenticated) {
-            return <Redirect
+            return <Navigate
                 to={{
                 pathname: "/",
                 state: { from: this.props.location }
@@ -97,7 +97,6 @@ class LoginForm extends Component {
             localStorage.setItem(ACCESS_TOKEN, response.accessToken);
             Alert.success("You're successfully logged in!");
             this.props.loadCurrentlyLoggedInUser();
-            this.props.history.push("/");
             //window.location.reload();
         }).catch(error => {
             Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');

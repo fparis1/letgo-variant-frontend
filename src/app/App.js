@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Route,
-  Switch
-} from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import AppHeader from '../common/AppHeader';
 import Home from '../home/Home';
 import Login from '../user/login/Login';
@@ -19,6 +16,7 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import './App.css';
 import PostItem from '../items/PostItem';
+import ViewItemComponent from '../items/ViewItem';
 
 class App extends Component {
   constructor(props) {
@@ -73,18 +71,24 @@ class App extends Component {
           <AppHeader authenticated={this.state.authenticated} onLogout={this.handleLogout} />
         </div>
         <div className="app-body">
-          <Switch>
-            <Route exact path="/" component={Home}></Route>           
-            <PrivateRoute path="/profile" authenticated={this.state.authenticated} currentUser={this.state.currentUser}
-              component={Profile}></PrivateRoute>
-            <PrivateRoute path="/post-item" authenticated={this.state.authenticated} component={PostItem}></PrivateRoute>
-            <Route path="/login"
-              render={(props) => <Login authenticated={this.state.authenticated} loadCurrentlyLoggedInUser={this.loadCurrentlyLoggedInUser} {...props} />}></Route>
-            <Route path="/signup"
-              render={(props) => <Signup authenticated={this.state.authenticated} {...props} />}></Route>
-            <Route path="/oauth2/redirect" component={OAuth2RedirectHandler}></Route>  
-            <Route component={NotFound}></Route>
-          </Switch>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/profile" element={
+              <PrivateRoute authenticated={this.state.authenticated}>
+                <Profile currentUser={this.state.currentUser} />
+              </PrivateRoute>
+            } />
+            <Route path="/post-item" element={
+              <PrivateRoute authenticated={this.state.authenticated}>
+                <PostItem />
+              </PrivateRoute>
+            } />
+            <Route path="/login" element={<Login authenticated={this.state.authenticated} loadCurrentlyLoggedInUser={this.loadCurrentlyLoggedInUser} />} />
+            <Route path="/signup" element={<Signup authenticated={this.state.authenticated} />} />
+            <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
+            <Route path="/view-item/:id" element={<ViewItemComponent />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </div>
         <Alert stack={{limit: 3}} 
           timeout = {3000}
