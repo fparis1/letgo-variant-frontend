@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppHeader from '../common/AppHeader';
 import Home from '../home/Home';
@@ -9,7 +9,7 @@ import OAuth2RedirectHandler from '../user/oauth2/OAuth2RedirectHandler';
 import NotFound from '../common/NotFound';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { getCurrentUser } from '../util/APIUtils';
-import { ACCESS_TOKEN } from '../constants';
+import { ACCESS_TOKEN, USER_EMAIL } from '../constants';
 import PrivateRoute from '../common/PrivateRoute';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
@@ -18,84 +18,69 @@ import './App.css';
 import PostItem from '../items/PostItem';
 import ViewItemComponent from '../items/ViewItem';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      authenticated: false,
-      currentUser: null,
-      loading: true
-    }
+const App = () => {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
-  }
-
-  loadCurrentlyLoggedInUser() {
+  const loadCurrentlyLoggedInUser = () => {
     getCurrentUser()
-    .then(response => {
-      this.setState({
-        currentUser: response,
-        authenticated: true,
-        loading: false
+      .then(response => {
+        setCurrentUser(response);
+        setAuthenticated(true);
+        setLoading(false);
+      }).catch(error => {
+        setLoading(false);
       });
-    }).catch(error => {
-      this.setState({
-        loading: false
-      });  
-    });    
-  }
+  };
 
-  handleLogout() {
+  const handleLogout = () => {
     localStorage.removeItem(ACCESS_TOKEN);
-    this.setState({
-      authenticated: false,
-      currentUser: null
-    });
+    localStorage.removeItem(USER_EMAIL);
+    setAuthenticated(false);
+    setCurrentUser(null);
     Alert.success("You're safely logged out!");
     window.location.reload();
+  };
+
+  useEffect(() => {
+    loadCurrentlyLoggedInUser();
+  }, []);
+
+  if (loading) {
+    return <LoadingIndicator />;
   }
 
-  componentDidMount() {
-    this.loadCurrentlyLoggedInUser();
-  }
-
-  render() {
-    if(this.state.loading) {
-      return <LoadingIndicator />
-    }
-
-    return (
-      <div className="app">
-        <div className="app-top-box">
-          <AppHeader authenticated={this.state.authenticated} onLogout={this.handleLogout} />
-        </div>
-        <div className="app-body">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile" element={
-              <PrivateRoute authenticated={this.state.authenticated}>
-                <Profile currentUser={this.state.currentUser} />
-              </PrivateRoute>
-            } />
-            <Route path="/post-item" element={
-              <PrivateRoute authenticated={this.state.authenticated}>
-                <PostItem />
-              </PrivateRoute>
-            } />
-            <Route path="/login" element={<Login authenticated={this.state.authenticated} loadCurrentlyLoggedInUser={this.loadCurrentlyLoggedInUser} />} />
-            <Route path="/signup" element={<Signup authenticated={this.state.authenticated} />} />
-            <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
-            <Route path="/view-item/:id" element={<ViewItemComponent />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </div>
-        <Alert stack={{limit: 3}} 
-          timeout = {3000}
-          position='top-right' effect='slide' offset={65} />
+  return (
+    <div className="app">
+      <div className="app-top-box">
+        <AppHeader authenticated={authenticated} onLogout={handleLogout} />
       </div>
-    );
-  }
-}
+      <div className="app-body">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={
+            <PrivateRoute authenticated={authenticated}>
+              <Profile currentUser={currentUser} />
+            </PrivateRoute>
+          } />
+          <Route path="/post-item" element={
+            <PrivateRoute authenticated={authenticated}>
+              <PostItem />
+            </PrivateRoute>
+          } />
+          <Route path="/login" element={<Login authenticated={authenticated} loadCurrentlyLoggedInUser={loadCurrentlyLoggedInUser} />} />
+          <Route path="/signup" element={<Signup authenticated={authenticated} />} />
+          <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
+          <Route path="/view-item/:id" element={<ViewItemComponent />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+      <Alert stack={{ limit: 3 }} 
+        timeout={3000}
+        position='top-right' effect='slide' offset={65} />
+    </div>
+  );
+};
 
 export default App;

@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import './Signup.css';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL, GITHUB_AUTH_URL } from '../../constants';
@@ -8,45 +8,41 @@ import googleLogo from '../../img/google-logo.png';
 import githubLogo from '../../img/github-logo.png';
 import Alert from 'react-s-alert';
 
-class Signup extends Component {
-    render() {
-        if (this.props.authenticated) {
-            return <Navigate to="/" />;
-        }
+const Signup = ({ authenticated }) => {
+    if (authenticated) {
+        return <Navigate to="/" />;
+    }
 
-        return (
-            <div className="signup-container">
-                <div className="signup-content">
-                    <h1 className="signup-title">Signup with SpringSocial</h1>
-                    <SocialSignup />
-                    <div className="or-separator">
-                        <span className="or-text">OR</span>
-                    </div>
-                    <SignupForm />
-                    <span className="login-link">Already have an account? <Link to="/login">Login!</Link></span>
+    return (
+        <div className="signup-container">
+            <div className="signup-content">
+                <h1 className="signup-title">Signup with SpringSocial</h1>
+                <SocialSignup />
+                <div className="or-separator">
+                    <span className="or-text">OR</span>
                 </div>
+                <SignupForm />
+                <span className="login-link">Already have an account? <Link to="/login">Login!</Link></span>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
-class SocialSignup extends Component {
-    render() {
-        return (
-            <div className="social-signup">
-                <a className="btn btn-block social-btn google" href={GOOGLE_AUTH_URL}>
-                    <img src={googleLogo} alt="Google" /> Sign up with Google
-                </a>
-                <a className="btn btn-block social-btn facebook" href={FACEBOOK_AUTH_URL}>
-                    <img src={fbLogo} alt="Facebook" /> Sign up with Facebook
-                </a>
-                <a className="btn btn-block social-btn github" href={GITHUB_AUTH_URL}>
-                    <img src={githubLogo} alt="Github" /> Sign up with Github
-                </a>
-            </div>
-        );
-    }
-}
+const SocialSignup = () => {
+    return (
+        <div className="social-signup">
+            <a className="btn btn-block social-btn google" href={GOOGLE_AUTH_URL}>
+                <img src={googleLogo} alt="Google" /> Sign up with Google
+            </a>
+            <a className="btn btn-block social-btn facebook" href={FACEBOOK_AUTH_URL}>
+                <img src={fbLogo} alt="Facebook" /> Sign up with Facebook
+            </a>
+            <a className="btn btn-block social-btn github" href={GITHUB_AUTH_URL}>
+                <img src={githubLogo} alt="Github" /> Sign up with Github
+            </a>
+        </div>
+    );
+};
 
 const SignupForm = () => {
     const [name, setName] = useState('');
@@ -100,7 +96,7 @@ const SignupForm = () => {
                     value={password} onChange={handleInputChange} required />
             </div>
             <div className="form-item">
-                <button type="submit" className="btn btn-block btn-primary" >Sign Up</button>
+                <button type="submit" className="btn btn-block btn-primary">Sign Up</button>
             </div>
         </form>
     );

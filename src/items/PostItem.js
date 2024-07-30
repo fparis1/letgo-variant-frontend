@@ -1,87 +1,73 @@
-// Import the CSS file here
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './PostItem.css';
-import { ACCESS_TOKEN } from '../constants';
+import { ACCESS_TOKEN, USER_EMAIL } from '../constants';
 
-class PostItem extends Component {
-  state = {
-    title: '',
-    description: '',
-    price: '',
-    photos: [],
-  };
+const PostItem = () => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [photos, setPhotos] = useState([]);
 
-  handleInputChange = (event) => {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
-    this.setState({ [name]: value });
+    if (name === 'title') setTitle(value);
+    if (name === 'description') setDescription(value);
+    if (name === 'price') setPrice(value);
   };
 
-  handleFileChange = (event) => {
+  const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
     const validFiles = files.filter(file => file.type === "image/jpeg" || file.type === "image/png");
-  
+
     if (validFiles.length !== files.length) {
       alert("Only JPEG and PNG files are allowed.");
     } else {
-      this.setState({ photos: validFiles });
+      setPhotos(validFiles);
     }
   };
 
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-  
-    // Create a FormData object
+
     const formData = new FormData();
-    
-    // Append form fields to the FormData object
-    formData.append('title', this.state.title);
-    formData.append('description', this.state.description);
-    formData.append('price', this.state.price);
-    
-    // Append files to the FormData object
-    this.state.photos.forEach((photo) => {
-        formData.append('file', photo);
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('price', price);
+    photos.forEach((photo) => {
+      formData.append('file', photo);
     });
-  
-    // Get the bearer token from localStorage
+    formData.append('email', localStorage.getItem(USER_EMAIL));
+
     const token = localStorage.getItem(ACCESS_TOKEN);
-  
-    // Use fetch to send the FormData object to your backend
+
     fetch('http://localhost:8080/postItem', {
       method: 'POST',
       body: formData,
       headers: {
-        // Include the Authorization header with the bearer token
         'Authorization': `Bearer ${token}`
       },
-      // Note: When using FormData, you should not set the Content-Type header manually
-      // The browser will set it to multipart/form-data and include the boundary parameter automatically
     })
     .then(data => {
       console.log('Success:', data);
-      // Handle success response
-      // You might want to clear the form or redirect the user
+      alert('Item posted successfully!');
     })
     .catch((error) => {
       console.error('Error:', error);
-      // Handle errors here
     });
   };
 
-  render() {
-    return (
-      <div className="post-item-container">
-        <h2 className="post-item-title">Post an Item for Sale</h2>
-        <form className="post-item-form" onSubmit={this.handleSubmit}>
-          <input className="post-item-input" type="text" name="title" placeholder="Title" onChange={this.handleInputChange} required />
-          <textarea className="post-item-textarea" name="description" placeholder="Description" onChange={this.handleInputChange} required></textarea>
-          <input className="post-item-input" type="number" name="price" placeholder="Price" onChange={this.handleInputChange} required />
-          <input className="post-item-file-input" type="file" multiple onChange={this.handleFileChange} />
-          <button className="post-item-submit-btn" type="submit">Post Item</button>
-        </form>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="post-item-container">
+      <h2 className="post-item-title">Post an Item for Sale</h2>
+      <form className="post-item-form" onSubmit={handleSubmit}>
+        <input className="post-item-input" type="text" name="title" placeholder="Title" onChange={handleInputChange} required />
+        <textarea className="post-item-textarea" name="description" placeholder="Description" onChange={handleInputChange} required></textarea>
+        <input className="post-item-input" type="number" name="price" placeholder="Price" onChange={handleInputChange} required />
+        <input className="post-item-file-input" type="file" multiple onChange={handleFileChange} />
+        <button className="post-item-submit-btn" type="submit">Post Item</button>
+      </form>
+    </div>
+  );
+};
 
 export default PostItem;

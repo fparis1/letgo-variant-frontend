@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ACCESS_TOKEN } from '../../constants';
+import { ACCESS_TOKEN, API_BASE_URL, USER_EMAIL } from '../../constants';
 
 function OAuth2RedirectHandler() {
     const location = useLocation();
@@ -19,8 +19,20 @@ function OAuth2RedirectHandler() {
     useEffect(() => {
         if (token) {
             localStorage.setItem(ACCESS_TOKEN, token);
-            navigate('/');
-            window.location.reload();
+            // Fetch user data from the backend using the token
+            fetch(API_BASE_URL + '/user/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Assuming the user's email is in the data object
+                localStorage.setItem(USER_EMAIL, data.email);
+                navigate('/');
+                window.location.reload();
+            })
+            .catch(error => console.error('Error fetching user data:', error));
         }
     }, [token, navigate]);
 
