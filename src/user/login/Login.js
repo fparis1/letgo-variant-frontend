@@ -26,7 +26,7 @@ const Login = ({ authenticated, loadCurrentlyLoggedInUser }) => {
     }, [location, navigate]);
 
     if (authenticated) {
-        return <Navigate to={{ pathname: "/", state: { from: location } }} />;
+        return navigate("/", { from: location });
     }
 
     return (

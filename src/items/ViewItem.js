@@ -1,12 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import './ViewItem.css';
 
 function ViewItemComponent() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // State to track current image index
+
+  const defaultIcon = L.icon({
+    iconUrl: markerIcon,
+    iconRetinaUrl: markerIcon2x,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+  
+  L.Marker.prototype.options.icon = defaultIcon;
 
   useEffect(() => {
     fetch(`http://localhost:8080/getSpecificItem/${id}`)
@@ -43,6 +62,9 @@ function ViewItemComponent() {
 
   return (
     <div className="view-item-container">
+      <div className="d-flex justify-content-center mt-3">
+        <button onClick={() => navigate('/')} className="btn btn-primary">Return to Main Page</button>
+      </div>
       <div className="container mt-5">
         <div className="card">
           <div className="card-body">
@@ -50,7 +72,7 @@ function ViewItemComponent() {
             <p className="card-text">{item.user.email}</p>
             <h2 className="card-title">{item.title}</h2>
             <p className="card-text">{item.description}</p>
-            <p className="card-text"><strong>{item.price} €</strong></p>
+            <p className="card-text"><strong>{parseInt(item.price)} €</strong></p>
             <div className="d-flex flex-wrap justify-content-center">
               <div className="image-container">
                 <img 
@@ -70,6 +92,14 @@ function ViewItemComponent() {
                 item.photos.length > 1 && (
                   <button onClick={nextImage} className="btn btn-secondary ml-2">Next</button>
               )}
+            </div>
+            <div className="d-flex justify-content-center mt-3">
+              <MapContainer center={[item.latitude, item.longitude]} zoom={13} style={{ height: "300px", width: "300px" }}>
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Marker position={[item.latitude, item.longitude]} icon={defaultIcon}></Marker>
+              </MapContainer>
             </div>
           </div>
         </div>

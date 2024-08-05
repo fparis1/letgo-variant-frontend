@@ -7,7 +7,7 @@ const Home = () => {
     const [items, setItems] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [pageSize, setPageSize] = useState(1);
+    const [pageSize, setPageSize] = useState(2);
 
     useEffect(() => {
         fetchItems();
@@ -51,7 +51,7 @@ const Home = () => {
                         const itemUrl = `/view-item/${item.id}`;
                         
                         return (
-                            <div key={item.id} className="col-md-3 mb-3">
+                            <div key={item.id} className="col-md-4 mb-4">
                                 <a href={itemUrl} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="card h-100">
                                         <img 
@@ -61,7 +61,11 @@ const Home = () => {
                                         />
                                         <div className="card-body">
                                             <h5 className="card-title">{item.title}</h5>
-                                            <p className="card-text">{item.price} <b>€</b></p>
+                                            <p className="card-text">{parseInt(item.price)} <b>€</b></p>
+                                            <div className="card-footer">
+                                                <span className="location">{item.county}, {item.city}</span>
+                                                <span className="date">{new Date(item.createdDate).toLocaleDateString()}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </a>
