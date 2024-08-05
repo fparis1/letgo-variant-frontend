@@ -5,3 +5,12 @@
     position: relative;
     padding-top: 60px;
 }
+
+.image-container {
+    width: 500px;
+    height: auto; /* Fixed height */
+    background-color: rgb(66, 66, 66); /* Black background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

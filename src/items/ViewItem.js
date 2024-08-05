@@ -52,14 +52,24 @@ function ViewItemComponent() {
             <p className="card-text">{item.description}</p>
             <p className="card-text"><strong>{item.price} €</strong></p>
             <div className="d-flex flex-wrap justify-content-center">
-              <button onClick={prevImage} className="btn btn-secondary mr-2">Previous</button>
-              <img 
-                src={`data:${item.photos[currentImageIndex].contentType};base64,${item.photos[currentImageIndex].data}`} 
-                alt={item.photos[currentImageIndex].fileName} 
-                className="img-fluid img-thumbnail"
-                style={{ maxHeight: '400px', maxWidth: '100%' }}
-              />
-              <button onClick={nextImage} className="btn btn-secondary ml-2">Next</button>
+              <div className="image-container">
+                <img 
+                  src={`data:${item.photos[currentImageIndex].contentType};base64,${item.photos[currentImageIndex].data}`} 
+                  alt={item.photos[currentImageIndex].fileName} 
+                  className="img-fluid img-thumbnail"
+                  style={{ width: '400px', height: 'auto' }}
+                />
+              </div>
+            </div>
+            <div className="d-flex justify-content-center mt-3">
+              {
+                item.photos.length > 1 && (
+                  <button onClick={prevImage} className="btn btn-secondary mr-2">Previous</button>
+              )}
+              {
+                item.photos.length > 1 && (
+                  <button onClick={nextImage} className="btn btn-secondary ml-2">Next</button>
+              )}
             </div>
           </div>
         </div>
