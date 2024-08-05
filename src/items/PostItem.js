@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Circle, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -23,6 +23,8 @@ const PostItem = () => {
   const [settlement, setSettlement] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [location, setLocation] = useState([45.788175, 15.96038]); // Default location
+  const [radius] = useState(1000); // Default radius in meters
+  const [useCircle, setUseCircle] = useState(false); // Toggle between exact and approximate location
 
   const navigate = useNavigate();
 
@@ -85,6 +87,7 @@ const PostItem = () => {
     formData.append('settlement', settlement);
     formData.append('latitude', location[0]);
     formData.append('longitude', location[1]);
+    formData.append('radius', useCircle); // Add radius to form data
     photos.forEach((photo) => {
       formData.append('file', photo);
     });
@@ -119,8 +122,11 @@ const PostItem = () => {
       },
     });
 
-    return location === null ? null : (
-      <Marker position={location} icon={defaultIcon}></Marker>
+    return (
+      <>
+        {!useCircle && <Marker position={location} icon={defaultIcon}></Marker>}
+        {useCircle && <Circle center={location} radius={radius} />}
+      </>
     );
   };
 
@@ -173,6 +179,18 @@ const PostItem = () => {
           </select>
         )}
         <input className="post-item-file-input" type="file" multiple onChange={handleFileChange} required />
+        <div className="location-toggle">
+          <label>
+            <input type="checkbox" checked={useCircle} onChange={() => setUseCircle(!useCircle)} />
+            Use approximate location
+          </label>
+        </div>
+        {useCircle && (
+          <div className="radius-slider">
+            {/*<label>Radius: {radius} meters</label>
+            <input type="range" min="100" max="5000" value={radius} onChange={(e) => setRadius(e.target.value)} />*/}
+          </div>
+        )}
         <MapContainer center={location} zoom={13} style={{ height: "400px", width: "100%" }}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -98,7 +98,11 @@ function ViewItemComponent() {
                 <TileLayer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <Marker position={[item.latitude, item.longitude]} icon={defaultIcon}></Marker>
+                {item.radius ? (
+                  <Circle center={[item.latitude, item.longitude]} radius={1000} />
+                ) : (
+                  <Marker position={[item.latitude, item.longitude]} icon={defaultIcon}></Marker>
+                )}
               </MapContainer>
             </div>
           </div>

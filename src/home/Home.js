@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Home.css';
 import { ACCESS_TOKEN } from '../constants';
+import categories from '../constants/categories';
 
 const Home = () => {
     const [items, setItems] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [pageSize, setPageSize] = useState(2);
+    const [pageSize, setPageSize] = useState(1);
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     useEffect(() => {
         fetchItems();
-    }, [currentPage]);
+    }, [currentPage, selectedCategory]);
 
     const fetchItems = () => {
         const token = localStorage.getItem(ACCESS_TOKEN);
@@ -21,7 +23,8 @@ const Home = () => {
             },
             params: { 
                 page: currentPage,
-                size: pageSize
+                size: pageSize,
+                category: selectedCategory
             }
         })
         .then(response => {
@@ -39,10 +42,27 @@ const Home = () => {
         }
     };
 
+    const handleCategoryClick = (category) => {
+        if (category === selectedCategory) {
+            return; // Do nothing if the clicked category is already selected
+        }
+        setSelectedCategory(category);
+        setItems([]); // Clear items when category changes
+        setCurrentPage(0); // Reset to first page
+    };
+
     return (
         <div className="home-container">
             <div className="container mt-5">
-                <div className="d-flex justify-content-center mt-4">
+                <div className="d-flex justify-content-center mt-4 category-container">
+                    {Object.keys(categories).map(categoryKey => (
+                        <button 
+                            key={categoryKey} 
+                            onClick={() => handleCategoryClick(categories[categoryKey].en)} 
+                            className="btn btn-secondary mx-2">
+                            {categories[categoryKey].hr}
+                        </button>
+                    ))}
                 </div>
                 <div className="row">
                     {items.map(item => {

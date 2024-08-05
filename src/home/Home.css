@@ -38,3 +38,7 @@
 .date {
     text-align: right;
 }
+
+.category-container {
+    margin-bottom: 20px; /* Adjust the value as needed */
+}
