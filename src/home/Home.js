@@ -10,10 +10,12 @@ const Home = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [pageSize, setPageSize] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedSubcategory, setSelectedSubcategory] = useState('');
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {
         fetchItems();
-    }, [currentPage, selectedCategory]);
+    }, [currentPage, selectedCategory, selectedSubcategory]);
 
     const fetchItems = () => {
         const token = localStorage.getItem(ACCESS_TOKEN);
@@ -24,7 +26,8 @@ const Home = () => {
             params: { 
                 page: currentPage,
                 size: pageSize,
-                category: selectedCategory
+                category: selectedCategory,
+                subcategory: selectedSubcategory
             }
         })
         .then(response => {
@@ -42,28 +45,81 @@ const Home = () => {
         }
     };
 
-    const handleCategoryClick = (category) => {
-        if (category === selectedCategory) {
-            return; // Do nothing if the clicked category is already selected
+    const handleCategoryClick = (category, subcategory = '') => {
+        if (category === selectedCategory && subcategory === selectedSubcategory) {
+            return; // Do nothing if the clicked category and subcategory are already selected
         }
         setSelectedCategory(category);
+        setSelectedSubcategory(subcategory);
         setItems([]); // Clear items when category changes
         setCurrentPage(0); // Reset to first page
+        setDropdownOpen(false); // Close dropdown on selection
     };
 
     return (
-        <div className="home-container">
-            <div className="container mt-5">
-                <div className="d-flex justify-content-center mt-4 category-container">
-                    {Object.keys(categories).map(categoryKey => (
-                        <button 
-                            key={categoryKey} 
-                            onClick={() => handleCategoryClick(categories[categoryKey].en)} 
-                            className="btn btn-secondary mx-2">
-                            {categories[categoryKey].hr}
+        <div className='container home-container'>
+            <div className="navbar">
+                <div className="dropdown-container">
+                    <div 
+                        className={`dropdown ${dropdownOpen ? 'open' : ''}`} 
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                    >
+                        <button className="dropdown-toggle">
+                            {selectedCategory ? `${selectedCategory}${selectedSubcategory ? ` > ${selectedSubcategory}` : ''}` : 'Select Category'}
+                            <span className={`arrow ${dropdownOpen ? 'up' : 'down'}`}></span>
                         </button>
-                    ))}
+                        <div className="dropdown-menu">
+                            <div className="container">
+                                <div className="row">
+                                    {Object.keys(categories).map(categoryKey => (
+                                        <div key={categoryKey} className="col-md-3 mb-4">
+                                            <div className="dropdown-item">
+                                                <div 
+                                                    onClick={() => handleCategoryClick(categories[categoryKey].en)}
+                                                    className="category"
+                                                >
+                                                    {categories[categoryKey].hr}
+                                                </div>
+                                                {dropdownOpen && categories[categoryKey].subcategories.map(subcategory => (
+                                                    <div 
+                                                        key={subcategory.hr} 
+                                                        onClick={() => handleCategoryClick(categories[categoryKey].en, subcategory.en)}
+                                                        className="subcategory"
+                                                    >
+                                                        {subcategory.hr}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <div className="additional-links">
+                    <a href="#link1">Link 1</a>
+                    <a href="#link2">Link 2</a>
+                    <a href="#link3">Link 3</a>
+                </div>
+            </div>
+            <div className="selected-categories">
+                <span>Selected Category: </span>
+                {selectedCategory && (
+                    <span className="selected-category" onClick={() => handleCategoryClick(selectedCategory)}>
+                        {selectedCategory}
+                    </span>
+                )}
+                {selectedSubcategory && (
+                    <>
+                        <span> &gt; </span>
+                        <span className="selected-subcategory" onClick={() => handleCategoryClick(selectedCategory, selectedSubcategory)}>
+                            {selectedSubcategory}
+                        </span>
+                    </>
+                )}
+            </div>
+            <div className="container mt-5">
                 <div className="row">
                     {items.map(item => {
                         const base64String = item.photo.data;
