@@ -79,6 +79,26 @@ const CategoryItems = () => {
                 dropdownOpen={dropdownOpen}
                 setDropdownOpen={setDropdownOpen}
             />
+            <div className="selected-categories">
+                {selectedCategory.hr !== '' && (
+                    <span 
+                        onClick={() => navigate('/')}
+                        style={{ cursor: 'pointer'}}
+                        >
+                            Početna &nbsp;
+                    </span>
+                )}
+                {selectedCategory.hr && (
+                    <>
+                        <span> &gt; &nbsp;</span>
+                        <span 
+                             
+                            >
+                                {selectedCategory.hr}
+                        </span>
+                    </>
+                )}
+            </div>
             <ItemsList items={items} handleLoadMore={handleLoadMore} currentPage={currentPage} totalPages={totalPages} />
         </div>
     );

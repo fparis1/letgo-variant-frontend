@@ -84,6 +84,36 @@ const SubcategoryItems = () => {
                 dropdownOpen={dropdownOpen}
                 setDropdownOpen={setDropdownOpen}
             />
+            <div className="selected-categories">
+                {selectedCategory.hr !== '' && (
+                    <span 
+                        onClick={() => navigate('/')}
+                        style={{ cursor: 'pointer'}}
+                        >
+                            Početna &nbsp;
+                    </span>
+                )}
+                {selectedCategory.hr && (
+                    <>
+                        <span> &gt; &nbsp;</span>
+                        <span 
+                             onClick={() => navigate(`/items/${selectedCategory.en}`)}
+                             style={{ cursor: 'pointer'}}
+                            >
+                                {selectedCategory.hr} &nbsp;
+                        </span>
+                    </>
+                )}
+                {selectedSubcategory.hr && (
+                    <>
+                        <span> &gt; &nbsp;</span>
+                        <span 
+                            >
+                                {selectedSubcategory.hr}
+                        </span>
+                    </>
+                )}
+            </div>
             <ItemsList items={items} handleLoadMore={handleLoadMore} currentPage={currentPage} totalPages={totalPages} />
         </div>
     );
