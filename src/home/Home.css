@@ -35,7 +35,7 @@
     width: 100%;
     display: inline-block;
     justify-content: left;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 .dropdown {
@@ -116,9 +116,9 @@
     border-bottom: 1px solid #e9ecef;
 }
 
-.dropdown-item:hover .category,
-.dropdown-item:hover .subcategory {
-    background-color: #e9ecef;
+.category:hover,
+.subcategory:hover {
+    background-color: #bbbbbb;
     border-radius: 4px;
 }
 
@@ -149,6 +149,7 @@
 }
 
 .additional-links {
+    padding-top: 10px;
     display: flex;
     margin-left: 10px;
 }
@@ -161,4 +162,31 @@
 
 .additional-links a:hover {
     text-decoration: underline;
+}
+
+.image-links {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin: auto;
+    border-style: ridge;
+    border-radius: 10px;
+    border-color: black;
+}
+
+.text-links {
+    text-align: center;
+    color: black;
+}
+
+.image-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px; /* Add some space between images */
+}
+
+.image-links:hover {
+    border-color: #0050c9; /* Adjust the color as needed */
+    border-width: 5px;
 }
