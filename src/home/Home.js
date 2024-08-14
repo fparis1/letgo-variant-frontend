@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Home.css';
 import { ACCESS_TOKEN } from '../constants';
@@ -10,6 +11,8 @@ import other_symbol from '../img/other_symbol.jpg';
 import sport_symbol from '../img/sport_symbol.jpg';
 import vehicle_symbol from '../img/vehicle_symbol.jpg';
 import real_estate_symbol from '../img/real_estate_symbol.jpg';
+import Navbar from '../components/Navbar';
+import ItemsList from '../components/ItemsList';
 
 const Home = () => {
     const [items, setItems] = useState([]);
@@ -19,6 +22,8 @@ const Home = () => {
     const [selectedCategory, setSelectedCategory] = useState({ en: '', hr: '' });
     const [selectedSubcategory, setSelectedSubcategory] = useState({ en: '', hr: '' });
     const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchItems();
@@ -61,50 +66,22 @@ const Home = () => {
         setItems([]); // Clear items when category changes
         setCurrentPage(0); // Reset to first page
         setDropdownOpen(false); // Close dropdown on selection
+    
+        // Navigate after state updates
+        if (subcategoryEn !== '') {
+            navigate(`/items/${categoryEn}/${subcategoryEn}`);
+        } else {
+            navigate(`/items/${categoryEn}`);
+        }
     };
 
     return (
         <div className='container home-container'>
-            <div className="navbar">
-                <div className="dropdown-container">
-                    <div 
-                        className={`dropdown ${dropdownOpen ? 'open' : ''}`} 
-                        onClick={() => setDropdownOpen(!dropdownOpen)}
-                    >
-                        <button className="dropdown-toggle">
-                            {'Odaberi kategoriju'}
-                            <span className={`arrow ${dropdownOpen ? 'up' : 'down'}`}></span>
-                        </button>
-                        <div className="dropdown-menu">
-                            <div className="container">
-                                <div className="row">
-                                    {Object.keys(categories).map(categoryKey => (
-                                        <div key={categoryKey} className="col-md-3 mb-4">
-                                            <div className="dropdown-item">
-                                                <div 
-                                                    onClick={() => handleCategoryClick(categories[categoryKey].en, categories[categoryKey].hr)}
-                                                    className="category"
-                                                >
-                                                    {categories[categoryKey].hr}
-                                                </div>
-                                                {dropdownOpen && categories[categoryKey].subcategories.map(subcategory => (
-                                                    <div 
-                                                        key={subcategory.hr} 
-                                                        onClick={() => handleCategoryClick(categories[categoryKey].en, categories[categoryKey].hr, subcategory.en, subcategory.hr)}
-                                                        className="subcategory"
-                                                    >
-                                                        {subcategory.hr}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Navbar
+                handleCategoryClick={handleCategoryClick}
+                dropdownOpen={dropdownOpen}
+                setDropdownOpen={setDropdownOpen}
+            />
             {selectedCategory.en === '' && (
                 <div className="container mt-4">
                 <div className="row justify-content-center">
@@ -158,43 +135,7 @@ const Home = () => {
                     </>
                 )}
             </div>
-            <div className="container mt-5">
-                <div className="row">
-                    {items.map(item => {
-                        const base64String = item.photo.data;
-                        const mimeType = item.photo.contentType;
-                        const itemUrl = `/view-item/${item.id}`;
-                        
-                        return (
-                            <div key={item.id} className="col-md-4 mb-4">
-                                <a href={itemUrl} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <div className="card h-100">
-                                        <img 
-                                            className="card-img-top" 
-                                            src={`data:${mimeType};base64,${base64String}`} 
-                                            alt={item.photo.fileName} 
-                                        />
-                                        <div className="card-body">
-                                            <h5 className="card-title">{item.title}</h5>
-                                            <p className="card-text">{parseInt(item.price)} <b>€</b></p>
-                                            <div className="card-footer">
-                                                <span className="location">{item.county}, {item.city}</span>
-                                                <span className="date">{new Date(item.createdDate).toLocaleDateString()}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        );
-                    })}
-                </div>
-                {currentPage < totalPages - 1 && 
-                    <button 
-                        onClick={handleLoadMore} 
-                        className="btn btn-primary">
-                        Load More
-                    </button>}
-            </div>
+            <ItemsList items={items} handleLoadMore={handleLoadMore} currentPage={currentPage} totalPages={totalPages} />
         </div>
     );
 };

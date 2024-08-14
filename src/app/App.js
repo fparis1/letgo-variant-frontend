@@ -1,7 +1,10 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppHeader from '../common/AppHeader';
 import Home from '../home/Home';
+import CategoryItems from '../components/CategoryItems';
+import SubcategoryItems from '../components/SubcategoryItems';
 import Login from '../user/login/Login';
 import Signup from '../user/signup/Signup';
 import Profile from '../user/profile/Profile';
@@ -59,6 +62,8 @@ const App = () => {
       <div className="app-body">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/items/:category" element={<CategoryItems />} />
+          <Route path="/items/:category/:subcategory" element={<SubcategoryItems />} />
           <Route path="/profile" element={
             <PrivateRoute authenticated={authenticated}>
               <Profile currentUser={currentUser} />
