@@ -1,0 +1,91 @@
+.filter-section {
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    margin-bottom: 20px;
+    position: relative;  /* Ensure the filter sections are positioned relative to the container */
+    z-index: 1; /* Set a low z-index to ensure it stays behind other elements */
+}
+
+.filter-section h5 {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.filter-section select,
+.filter-section input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.filter-section button {
+    width: 100%;
+    background-color: #e91e63;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filter-section button:hover {
+    background-color: #d81b60;
+}
+
+.accordion-header {
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    z-index: 1; /* Same here */
+}
+
+.accordion-header:hover {
+    background-color: #f1f1f1;
+}
+
+.accordion-body {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    z-index: 1; /* Same here */
+}
+
+.accordion-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.accordion-body li {
+    padding: 5px 0;
+}
+
+.sticky-top {
+    position: relative;
+    z-index: 1;
+}
+
+.custom-bullet-list {
+    list-style-type: none; /* Remove default bullets */
+    padding-left: 0;
+}
+
+.custom-bullet-item::before {
+    content: '•'; /* Custom bullet character */
+    color: red; /* Custom bullet color */
+    display: inline-block; 
+    width: 1em; /* Space between bullet and text */
+    /* margin-left: -1em; Position bullet correctly */
+}

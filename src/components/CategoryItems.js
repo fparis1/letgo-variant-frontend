@@ -36,7 +36,7 @@ const CategoryItems = () => {
             params: { 
                 page: currentPage,
                 size: pageSize,
-                category: category
+                category: category,
             }
         })
         .then(response => {
@@ -91,15 +91,20 @@ const CategoryItems = () => {
                 {selectedCategory.hr && (
                     <>
                         <span> &gt; &nbsp;</span>
-                        <span 
-                             
-                            >
-                                {selectedCategory.hr}
+                        <span>
+                            {selectedCategory.hr}
                         </span>
                     </>
                 )}
             </div>
-            <ItemsList items={items} handleLoadMore={handleLoadMore} currentPage={currentPage} totalPages={totalPages} />
+            <ItemsList 
+                items={items} 
+                handleLoadMore={handleLoadMore} 
+                currentPage={currentPage} 
+                totalPages={totalPages}
+                categoryHr={selectedCategory.hr}
+                categoryEn={selectedCategory.en} 
+            />
         </div>
     );
 };
