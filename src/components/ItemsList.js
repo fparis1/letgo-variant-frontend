@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import categories from '../constants/categories';
 import './ItemsList.css';
+import 'rc-slider/assets/index.css';
+import Slider from 'rc-slider';
 
-const ItemsList = ({ items, handleLoadMore, currentPage, totalPages, categoryHr, categoryEn }) => {
+const ItemsList = ({ items, handleLoadMore, currentPage, totalPages, categoryHr, categoryEn, subcategoryHr, subcategoryEn }) => {
     const allSubcategories = categories[categoryHr]?.subcategories || [];
 
     // Price filtering state
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
+    const [priceRange, setPriceRange] = useState([0, 10000000]);
 
     // Filter items by price
     const filteredItems = items.filter(item => {
@@ -33,6 +36,11 @@ const ItemsList = ({ items, handleLoadMore, currentPage, totalPages, categoryHr,
         }
     }
 
+    const applyPriceFilter = () => {
+        setMinPrice(priceRange[0]);
+        setMaxPrice(priceRange[1]);
+    };
+
     return (
         <div className="container mt-5">
             <div className="row">
@@ -44,11 +52,29 @@ const ItemsList = ({ items, handleLoadMore, currentPage, totalPages, categoryHr,
                                     Kategorije
                                 </div>
                                 <div className="accordion-body">
-                                    <h5>{categoryHr}</h5>
+                                    <a 
+                                        href={`/items/${categoryEn}`} 
+                                        style={{ 
+                                            textDecoration: 'none', 
+                                            color: 'inherit', 
+                                            fontWeight: subcategoryHr === undefined ? 'bold' : 'normal' 
+                                        }}
+                                    >
+                                        {categoryHr}
+                                    </a>
                                     <ul>
                                         {allSubcategories.map((subcategory, index) => (
-                                            <a href={`/items/${categoryEn}/${subcategory.en}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                                <li key={index} className="custom-bullet-item">{subcategory.hr}</li>
+                                            <a 
+                                                href={`/items/${categoryEn}/${subcategory.en}`} 
+                                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                            >
+                                                <li 
+                                                    key={index} 
+                                                    className="custom-bullet-item" 
+                                                    style={{ fontWeight: subcategory.hr === subcategoryHr ? 'bold' : 'normal' }}
+                                                >
+                                                    {subcategory.hr}
+                                                </li>
                                             </a>
                                         ))}
                                     </ul>
@@ -60,21 +86,18 @@ const ItemsList = ({ items, handleLoadMore, currentPage, totalPages, categoryHr,
                                     Cijena
                                 </div>
                                 <div className="accordion-body">
-                                    <input 
-                                        type="number" 
-                                        className="form-control" 
-                                        placeholder="najmanje" 
-                                        value={minPrice} 
-                                        onChange={(e) => setMinPrice(e.target.value)} 
+                                    <Slider
+                                        range
+                                        min={0}
+                                        max={10000000} // Adjust the max value as needed
+                                        value={priceRange}
+                                        onChange={setPriceRange}
                                     />
-                                    <input 
-                                        type="number" 
-                                        className="form-control" 
-                                        placeholder="većina" 
-                                        value={maxPrice} 
-                                        onChange={(e) => setMaxPrice(e.target.value)} 
-                                    />
-                                    <button className="btn btn-primary" onClick={() => {}}>
+                                    <div className="d-flex justify-content-between mt-2">
+                                        <span>{priceRange[0]} €</span>
+                                        <span>{priceRange[1]} €</span>
+                                    </div>
+                                    <button className="btn btn-primary" onClick={applyPriceFilter}>
                                         Primijeni
                                     </button>
                                 </div>

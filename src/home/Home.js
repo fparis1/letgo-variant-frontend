@@ -18,7 +18,7 @@ const Home = () => {
     const [items, setItems] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [pageSize, setPageSize] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const [selectedCategory, setSelectedCategory] = useState({ en: '', hr: '' });
     const [selectedSubcategory, setSelectedSubcategory] = useState({ en: '', hr: '' });
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -135,7 +135,12 @@ const Home = () => {
                     </>
                 )}
             </div>
-            <ItemsList items={items} handleLoadMore={handleLoadMore} currentPage={currentPage} totalPages={totalPages} />
+            <ItemsList 
+                items={items} 
+                handleLoadMore={handleLoadMore} 
+                currentPage={currentPage} 
+                totalPages={totalPages} 
+            />
         </div>
     );
 };

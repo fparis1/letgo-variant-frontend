@@ -7,7 +7,7 @@ const AppHeader = (props) => {
         <header className="app-header">
             <div className="container">
                 <div className="app-branding">
-                    <Link to="/" className="app-title">Letgo variant</Link>
+                    <Link to="/" className="app-title">BuyNSell</Link>
                 </div>
                 <div className="app-options">
                     <nav className="app-nav">

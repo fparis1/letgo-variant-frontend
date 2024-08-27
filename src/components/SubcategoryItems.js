@@ -114,7 +114,15 @@ const SubcategoryItems = () => {
                     </>
                 )}
             </div>
-            <ItemsList items={items} handleLoadMore={handleLoadMore} currentPage={currentPage} totalPages={totalPages} />
+            <ItemsList 
+            items={items} 
+            handleLoadMore={handleLoadMore} 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            categoryHr={selectedCategory.hr}
+            categoryEn={selectedCategory.en}
+            subcategoryHr={selectedSubcategory.hr}
+            subcategoryEn={selectedSubcategory.en}/>
         </div>
     );
 };
