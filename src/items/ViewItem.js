@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Circle } from 'react-leaflet';
 import L from 'leaflet';
@@ -17,6 +17,9 @@ function ViewItemComponent() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState({ en: '', hr: '' });
   const [selectedSubcategory, setSelectedSubcategory] = useState({ en: '', hr: '' });
+
+  const imageScrollbarRef = useRef(null);
+  const imageRefs = useRef([]);
 
   const defaultIcon = L.icon({
     iconUrl: markerIcon,
@@ -37,7 +40,7 @@ function ViewItemComponent() {
         setItem(data);
         const categoryHR = Object.keys(categories).find(key => categories[key].en === data.category);
         const subcategoryObj = categories[categoryHR].subcategories.find(subcat => subcat.en === data.subcategory);
-        setSelectedCategory({ en: data.category, hr: categoryHR});
+        setSelectedCategory({ en: data.category, hr: categoryHR });
         setSelectedSubcategory(subcategoryObj);
         setLoading(false);
       })
@@ -46,6 +49,14 @@ function ViewItemComponent() {
         setLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (imageScrollbarRef.current && imageRefs.current[currentImageIndex]) {
+      const selectedImage = imageRefs.current[currentImageIndex];
+      const scrollLeft = selectedImage.offsetLeft - (imageScrollbarRef.current.offsetWidth / 2) + (selectedImage.offsetWidth / 2);
+      imageScrollbarRef.current.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    }
+  }, [currentImageIndex]);
 
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => 
@@ -75,45 +86,44 @@ function ViewItemComponent() {
     <div className="view-item-container container mt-5">
       <div className="row mb-3">
         <div className="selected-categories">
-            {selectedCategory.hr !== '' && (
-                <span 
-                    onClick={() => navigate('/')}
-                    style={{ cursor: 'pointer'}}
-                    >
-                        Početna &nbsp;
-                </span>
-            )}
-            {selectedCategory.hr && (
-                <>
-                    <span> &gt; &nbsp;</span>
-                    <span 
-                          onClick={() => navigate(`/items/${selectedCategory.en}`)}
-                          style={{ cursor: 'pointer'}}
-                        >
-                            {selectedCategory.hr} &nbsp;
-                    </span>
-                </>
-            )}
-            {selectedSubcategory.hr && (
-                <>
-                    <span> &gt; &nbsp;</span>
-                    <span 
-                          onClick={() => navigate(`/items/${selectedCategory.en}/${selectedSubcategory.en}`)}
-                          style={{ cursor: 'pointer'}}
-                        >
-                            {selectedSubcategory.hr}
-                    </span>
-                </>
-            )}
-            {selectedSubcategory.hr && (
-                <>
-                    <span>&nbsp; &gt; &nbsp;</span>
-                    <span 
-                        >
-                            {item.title}
-                    </span>
-                </>
-            )}
+          {selectedCategory.hr !== '' && (
+            <span 
+              onClick={() => navigate('/')}
+              style={{ cursor: 'pointer' }}
+            >
+              Početna &nbsp;
+            </span>
+          )}
+          {selectedCategory.hr && (
+            <>
+              <span> &gt; &nbsp;</span>
+              <span 
+                onClick={() => navigate(`/items/${selectedCategory.en}`)}
+                style={{ cursor: 'pointer' }}
+              >
+                {selectedCategory.hr} &nbsp;
+              </span>
+            </>
+          )}
+          {selectedSubcategory.hr && (
+            <>
+              <span> &gt; &nbsp;</span>
+              <span 
+                onClick={() => navigate(`/items/${selectedCategory.en}/${selectedSubcategory.en}`)}
+                style={{ cursor: 'pointer' }}
+              >
+                {selectedSubcategory.hr}
+              </span>
+            </>
+          )}
+          {selectedSubcategory.hr && (
+            <>
+              <span>&nbsp; &gt; &nbsp;</span>
+              <span>
+                {item.title}
+              </span>
+            </>
+          )}
         </div>
       </div>
       <div className="row">
@@ -137,10 +147,11 @@ function ViewItemComponent() {
                 </>
               )}
             </div>
-            <div className="image-scrollbar mt-3 d-flex overflow-auto">
+            <div className="image-scrollbar mt-3 d-flex overflow-auto" ref={imageScrollbarRef}>
               {item.photos.map((photo, index) => (
                 <img 
                   key={index}
+                  ref={el => imageRefs.current[index] = el}
                   src={`data:${photo.contentType};base64,${photo.data}`} 
                   alt={photo.fileName} 
                   className={`img-thumbnail mx-1 ${index === currentImageIndex ? 'border border-primary' : ''}`}
