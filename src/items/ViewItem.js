@@ -83,7 +83,7 @@ function ViewItemComponent() {
   }
 
   return (
-    <div className="view-item-container container mt-5">
+    <div className="view-item-container container mt-5 mb-5">
       <div className="row mb-3">
         <div className="selected-categories">
           {selectedCategory.hr !== '' && (
@@ -159,6 +159,12 @@ function ViewItemComponent() {
                   onClick={() => handleImageClick(index)}
                 />
               ))}
+            </div>
+          </div>
+          <div className="card mt-3">
+            <div className="card-body text-left">
+              <h4 className="card-title">Description</h4>
+              <p className="card-text">{item.description}</p>
             </div>
           </div>
         </div>

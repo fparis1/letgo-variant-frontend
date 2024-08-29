@@ -137,11 +137,13 @@ const ItemsList = ({ items, handleLoadMore, currentPage, totalPages, categoryHr,
                         })}
                     </div>
                     {currentPage < totalPages - 1 && 
-                        <button 
-                            onClick={handleLoadMore} 
-                            className="btn btn-primary">
-                            Load More
-                        </button>}
+                        <div className="button-container">
+                            <button 
+                                onClick={handleLoadMore} 
+                                className="btn btn-primary">
+                                Load More
+                            </button>
+                        </div>}
                 </div>
             </div>
         </div>

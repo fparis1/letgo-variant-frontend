@@ -89,3 +89,11 @@
     width: 1em; /* Space between bullet and text */
     /* margin-left: -1em; Position bullet correctly */
 }
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Adjust as needed */
+    margin-bottom: 40px; /* Adjust as needed */
+}
